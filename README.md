@@ -20,7 +20,7 @@
 
 论文提出的方法主要包括基于LAB色彩格式的图像风格空间统一化、多源域间协作学习、未标记目标域协作学习三个步骤，其出发点为目标域部分可访问，最终得到多个具有较好泛化效果的模型，同时文章进行了大量的实验来验证其方法的有效性，并设置了消融实验来验证方法各步骤的有效性。基本的方法框架如下图所示。
 
-![image-20240614021835316](https://github.com/Starislighting/Mul_source_adaptation/test_imgs/1.png)
+![image-20240614021835316](https://github.com/Starislighting/Mul_source_adaptation/blob/master/test_imgs/1.png)
 
 #### 1.2.1 基于LAB色彩格式的图像风格空间统一化
 
