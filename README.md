@@ -26,7 +26,7 @@
 
 论文中指出，域之间的域差异主要在于图像的外观，即颜色和纹理，这种差异将进一步增加多源域适应的难度，而有效的风格转换可以在一定程度上减少这种差异，进而降低多源域适应的难度，提升模型的泛化能力。论文从简单高效的角度出发，提出了一种图像转换方法，通过对齐像素值的分布，将源域中的图像样式转换为目标域的样式。同时由于LAB颜色空间的色域相对RGB颜色空间更易区分处理，在LAB色彩空间上进行的图像风格空间的统一化比直接在RGB颜色空间上操作更为简单，效果更好，因此论文将在LAB颜色空间上进行统一化处理。相关公式如下：
 
-![image-20240614022856833](/home/kolo/.config/Typora/typora-user-images/image-20240614022856833.png)
+![image-20240614022856833](https://github.com/Starislighting/Mul_source_adaptation/blob/master/test_imgs/2.png)
 
 其中将源域和目标域的颜色空间从RGB转换到LAB中，分别计算源域和目标域LAB颜色空间中各个通道下的均值和标准差，通过公式方式对源域图像进行处理，最终将处理后的源域图像从LAB色彩空间转换为RGB色彩空间
 
@@ -36,13 +36,13 @@
 
 其公式如下：
 
-![image-20240614023410174](/home/kolo/.config/Typora/typora-user-images/image-20240614023410174.png)
+![image-20240614023410174](https://github.com/Starislighting/Mul_source_adaptation/blob/master/test_imgs/3.png)
 
-![image-20240614023430484](/home/kolo/.config/Typora/typora-user-images/image-20240614023430484.png)
+![image-20240614023430484](https://github.com/Starislighting/Mul_source_adaptation/blob/master/test_imgs/4.png)
 
-![image-20240614023444251](/home/kolo/.config/Typora/typora-user-images/image-20240614023444251.png)
+![image-20240614023444251](https://github.com/Starislighting/Mul_source_adaptation/blob/master/test_imgs/5.png)
 
-![image-20240614023520646](/home/kolo/.config/Typora/typora-user-images/image-20240614023520646.png)
+![image-20240614023520646](https://github.com/Starislighting/Mul_source_adaptation/blob/master/test_imgs/6.png)
 
 大致思路为在一次训练过程中同时训练多个模型，对于其中任意一个模型，其目标函数在原有交叉熵结果的基础上，加上一个协作损失，协作损失为其他模型在本源域上预测结果同本模型在本源域上预测结果的KL散度的平均值。
 
@@ -50,17 +50,17 @@
 
 论文中指出，在实践中，未标记的目标域数据的收集通常相对容易且便宜。此外，在目标域数据上训练的模型可以学习更好的特征，并在目标域上表现更好。因此提出了一种协作学习方法，充分利用目标域中未标记的图像，并进一步提高模型在目标域上的性能。其公式和伪代码如下：
 
-![image-20240614023859171](/home/kolo/.config/Typora/typora-user-images/image-20240614023859171.png)
+![image-20240614023859171](https://github.com/Starislighting/Mul_source_adaptation/blob/master/test_imgs/7.png)
 
-![image-20240614023915554](/home/kolo/.config/Typora/typora-user-images/image-20240614023915554.png)
+![image-20240614023915554](https://github.com/Starislighting/Mul_source_adaptation/blob/master/test_imgs/8.png)
 
-![image-20240614023944816](/home/kolo/.config/Typora/typora-user-images/image-20240614023944816.png)
+![image-20240614023944816](https://github.com/Starislighting/Mul_source_adaptation/blob/master/test_imgs/9.png)
 
 大致思路为，在一次训练中，由于同时会对多个模型进行训练，每一个训练结果均能够对随机一张未标记的目标域图像进行预测，将预测结果进行softmax处理后取均值，随后用argmax的思想生成其伪标签，进而就可以将伪标签同任意模型在未标记目标域图像上的训练结果计算交叉熵，这一交叉熵乘以一个与当前训练轮次相关的值，随后就可以加入至任意一个模型的目标函数中。
 
 #### 1.2.4 整体的目标函数
 
-![image-20240614024258373](/home/kolo/.config/Typora/typora-user-images/image-20240614024258373.png)
+![image-20240614024258373](https://github.com/Starislighting/Mul_source_adaptation/blob/master/test_imgs/10.png)
 
 整体的目标函数如上图所示，可以看出共分为三个部分，一个是最基本的交叉熵，第二个是多源域协作学习的损失，最后一个是未标记目标域协作学习的损失，最后公式中前文未提及的两个参数为超参数，在训练前进行预定义。
 
@@ -507,15 +507,15 @@ import msadapter.pytorch as torch
 
 良好情况
 
-![image-20240614031552712](/home/kolo/.config/Typora/typora-user-images/image-20240614031552712.png)
+![image-20240614031552712](https://github.com/Starislighting/Mul_source_adaptation/blob/master/test_imgs/11.png)
 
-![image-20240614031532660](/home/kolo/.config/Typora/typora-user-images/image-20240614031532660.png)
+![image-20240614031532660](https://github.com/Starislighting/Mul_source_adaptation/blob/master/test_imgs/12.png)
 
 不佳情况
 
-![image-20240614031611851](/home/kolo/.config/Typora/typora-user-images/image-20240614031611851.png)
+![image-20240614031611851](https://github.com/Starislighting/Mul_source_adaptation/blob/master/test_imgs/13.png)
 
-![image-20240614031635445](/home/kolo/.config/Typora/typora-user-images/image-20240614031635445.png)
+![image-20240614031635445](https://github.com/Starislighting/Mul_source_adaptation/blob/master/test_imgs/14.png)
 
 - 单源域训练过程：在单个源域，不涉及协作学习的情况下，训练能够有序的进行，训练执行和训练信息如下
 
